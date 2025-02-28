@@ -1,5 +1,6 @@
 name: Deploy to GitHub Pages
 
+# Trigger the workflow on push to the 'main' branch
 on:
   push:
     branches:
@@ -11,30 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout code from the main branch
+      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (if your project uses it)
+      # Step 2: Set up Node.js (optional, if your project requires Node.js)
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Specify the Node.js version (you can adjust this version as needed)
+          node-version: '14'  # Specify Node.js version (adjust if needed)
 
-      # Step 3: Install dependencies (if you use npm/yarn)
+      # Step 3: Install dependencies (npm or yarn)
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Build the project (if applicable, like in React, Vue, etc.)
+      # Step 4: Build the project (e.g., build static files if applicable)
       - name: Build the project
-        run: npm run build  # Adjust this to match your build command (e.g., npm run build)
+        run: npm run build  # If using React, Vue, or other static file builders
 
-      # Step 5: Deploy to GitHub Pages (using the peaceiris action)
+      # Step 5: Deploy the build files to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          # This is the directory where the generated content (HTML, CSS, JS) is located
-          folder: ./build  # Change to your build folder if different, e.g., ./dist for some frameworks
+          folder: ./build  # Point to the folder containing your built files (e.g., `build`, `dist`)
         env:
-          # Provide your GitHub token for authentication (GitHub automatically provides this)
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides this secret token
