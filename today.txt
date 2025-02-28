@@ -1,0 +1,187 @@
+Project Structure:
+
+/globalmail
+│── index.html        # Login/Register Page
+│── register.html     # Email Account Creation
+│── dashboard.html    # Email Inbox (User Dashboard)
+│── profile.html      # Profile Management
+│── forgot-password.html  # Password Recovery Page
+│── auth.js           # Authentication & Email Handling
+│── email.js          # Email Sending/Receiving with Encryption
+│── database.json     # User Database (Stored on GitHub)
+│── README.md         # Documentation
+│── styles.css        # Styling for UI
+
+---
+
+# index.html (Login & Registration Homepage)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail - Sign In</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="auth.js"></script>
+</head>
+<body>
+    <h1>Welcome to GlobalMail</h1>
+    <div>
+        <h2>Sign In</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="signIn()">Login</button>
+        <p><a href="forgot-password.html">Forgot Password?</a></p>
+        <p>Don't have an account? <a href="register.html">Create one</a></p>
+    </div>
+</body>
+</html>
+
+---
+
+# register.html (Account Creation)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - GlobalMail</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="auth.js"></script>
+</head>
+<body>
+    <h1>Create a GlobalMail Account</h1>
+    <form id="registerForm">
+        <input type="text" id="fullName" placeholder="Full Name" required>
+        <input type="date" id="dob" required>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="text" id="country" placeholder="Country" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <h3>Choose Your Email Address</h3>
+        <input type="text" id="customEmail" placeholder="yourname" required> @globalmail.com
+        <button type="button" onclick="checkEmailAvailability()">Check Availability</button>
+        <p id="emailStatus"></p>
+        <button type="submit">Agree to Terms & Register</button>
+    </form>
+</body>
+</html>
+
+---
+
+# dashboard.html (Email Homepage)
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="auth.js"></script>
+    <script defer src="email.js"></script>
+</head>
+<body>
+    <h1>Welcome to GlobalMail</h1>
+    <nav>
+        <a href="#" onclick="loadInbox()">Inbox</a>
+        <a href="#" onclick="loadSent()">Sent</a>
+        <a href="#" onclick="loadDrafts()">Drafts</a>
+        <a href="profile.html">Profile</a>
+        <button onclick="logout()">Logout</button>
+    </nav>
+    <div id="email-content">
+        <!-- Emails will be loaded here -->
+    </div>
+</body>
+</html>
+
+---
+
+# auth.js (Authentication & Email Handling)
+
+const API_URL = `https://api.github.com/repos/YOUR-USERNAME/globalmail/contents/database.json`;
+const GITHUB_TOKEN = "your-github-token";
+
+async function getDatabase() {
+    const response = await fetch(API_URL, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } });
+    const data = await response.json();
+    return JSON.parse(atob(data.content));
+}
+
+async function updateDatabase(updatedData) {
+    const currentData = await fetch(API_URL, { headers: { "Authorization": `token ${GITHUB_TOKEN}` } }).then(res => res.json());
+    const sha = currentData.sha;
+    await fetch(API_URL, {
+        method: "PUT",
+        headers: { "Authorization": `token ${GITHUB_TOKEN}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ message: "Update user database", content: btoa(JSON.stringify(updatedData, null, 2)), sha: sha })
+    });
+}
+
+async function signIn() {
+    let database = await getDatabase();
+    let email = document.getElementById("email").value;
+    let password = await hashPassword(document.getElementById("password").value);
+    let user = database.users.find(user => user.email === email && user.password === password);
+    if (user) {
+        alert("Login Successful!");
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Invalid Credentials");
+    }
+}
+
+function logout() {
+    alert("Logged out successfully!");
+    window.location.href = "index.html";
+}
+
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+---
+
+# email.js (Email Sending/Receiving with Encryption)
+
+const SECRET_KEY = "YOUR_SECRET_ENCRYPTION_KEY";
+
+function encryptEmail(content) {
+    return CryptoJS.AES.encrypt(content, SECRET_KEY).toString();
+}
+
+function decryptEmail(encryptedContent) {
+    let bytes = CryptoJS.AES.decrypt(encryptedContent, SECRET_KEY);
+    return bytes.toString(CryptoJS.enc.Utf8);
+}
+
+async function sendEmail() {
+    let database = await getDatabase();
+    let sender = localStorage.getItem("loggedInUser");
+    let recipient = document.getElementById("toEmail").value;
+    let subject = document.getElementById("subject").value;
+    let message = document.getElementById("message").value;
+    let encryptedMessage = encryptEmail(message);
+
+    let email = { from: sender, to: recipient, subject: subject, content: encryptedMessage, timestamp: new Date().toISOString() };
+    database.emails.push(email);
+    await updateDatabase(database);
+    alert("Email sent securely!");
+}
+
+async function loadInbox() {
+    let database = await getDatabase();
+    let userEmail = localStorage.getItem("loggedInUser");
+    let inbox = database.emails.filter(email => email.to === userEmail);
+    let inboxContent = inbox.map(email => `<div><strong>From: ${email.from}</strong><p>${decryptEmail(email.content)}</p><hr></div>`).join("");
+    document.getElementById("email-content").innerHTML = inboxContent;
+}

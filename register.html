@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - GlobalMail</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="auth.js"></script>
+</head>
+<body>
+    <h1>Create a GlobalMail Account</h1>
+    <form id="registerForm">
+        <input type="text" id="fullName" placeholder="Full Name" required>
+        <input type="date" id="dob" required>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <input type="text" id="country" placeholder="Country" required>
+        <input type="tel" id="phone" placeholder="Phone Number" required>
+        <h3>Choose Your Email Address</h3>
+        <input type="text" id="customEmail" placeholder="yourname" required> @globalmail.com
+        <button type="button" onclick="checkEmailAvailability()">Check Availability</button>
+        <p id="emailStatus"></p>
+        <button type="submit">Agree to Terms & Register</button>
+    </form>
+</body>
+</html>
