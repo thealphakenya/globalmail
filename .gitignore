@@ -1,0 +1,4 @@
+# Ignore auth.js or any file with tokens
+auth.js
+github token.txt
+config.json
