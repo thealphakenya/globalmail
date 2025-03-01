@@ -4,7 +4,6 @@
   "description": "A secure email application",
   "main": "index.html",
   "scripts": {
-    "build": "echo 'No build step needed for static files'",
     "deploy": "echo 'Deploying app to GitHub Pages'"
   },
   "dependencies": {
