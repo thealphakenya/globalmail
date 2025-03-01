@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master  # Ensure this is the branch you want to automatically deploy from
+  # Optional: If you want to deploy on pull requests targeting the master branch:
+  pull_request:
+    branches:
+      - master
+
+concurrency:
+  group: production
+  cancel-in-progress: true  # This ensures only one deployment is active at any given time.
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production  # You can change this to another environment like 'staging' if needed.
+
+    steps:
+      # Step 1: Checkout the repository code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Optional: Set up Node.js if your project requires it (remove if not needed)
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Update this if necessary based on your project
+
+      # Step 2: Install dependencies (use only if your project needs it)
+      - name: Install dependencies
+        run: npm install
+
+      # Step 3: Build the project (use this if you need to build assets like static files)
+      - name: Build the project
+        run: npm run build  # Adjust this if your project uses a different build tool
+
+      # Step 4: Deploy the built files to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          folder: ./  # Point to the folder containing your built files. Change this if your build output is in another folder.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides this token
