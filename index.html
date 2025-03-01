@@ -39,11 +39,18 @@
             if (response.ok) {
                 localStorage.setItem("user", JSON.stringify(data.user));
                 alert("Login Successful!");
-                window.location.href = "profile.html";
+                window.location.href = "globalmailhomepage.html"; // Redirect to homepage if logged in
             } else {
                 alert(data.message || "Invalid Credentials");
             }
         }
+
+        window.onload = () => {
+            const user = localStorage.getItem("user");
+            if (user) {
+                window.location.href = "globalmailhomepage.html"; // Redirect to homepage if already logged in
+            }
+        };
     </script>
 </body>
 </html>

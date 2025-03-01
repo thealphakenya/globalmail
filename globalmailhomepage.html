@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail - Homepage</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="auth.js"></script>
+</head>
+<body onload="checkLoginStatus()">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#" onclick="showInbox()">Inbox</a></li>
+                <li><a href="#" onclick="showSent()">Sent</a></li>
+                <li><a href="#" onclick="composeEmail()">Compose Email</a></li>
+                <li><a href="profile.html" id="profileLink">Profile</a></li>
+                <li><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Display Profile Picture in Top Right -->
+        <div id="userProfilePic" class="profile-pic" onclick="goToProfile()">
+            <img id="profileImg" src="" alt="Profile Picture">
+        </div>
+    </header>
+
+    <main id="mainContent">
+        <!-- Dynamic content will be loaded here -->
+    </main>
+
+    <script>
+        function checkLoginStatus() {
+            const user = localStorage.getItem("user");
+            if (!user) {
+                window.location.href = "index.html"; // Redirect to login page if not logged in
+            } else {
+                const parsedUser = JSON.parse(user);
+                document.getElementById("profileImg").src = parsedUser.profilePicture || "default-profile.png"; // Default image if none exists
+            }
+        }
+
+        function goToProfile() {
+            window.location.href = "profile.html"; // Redirect to profile page on clicking profile picture
+        }
+
+        function showInbox() {
+            // Fetch inbox emails from database (or mock data for now)
+            let inbox = getMockEmails("inbox");
+            renderEmailList(inbox);
+        }
+
+        function showSent() {
+            // Fetch sent emails from database (or mock data for now)
+            let sentEmails = getMockEmails("sent");
+            renderEmailList(sentEmails);
+        }
+
+        function renderEmailList(emails) {
+            const mainContent = document.getElementById("mainContent");
+            mainContent.innerHTML = ''; // Clear previous content
+
+            const emailList = document.createElement("ul");
+
+            emails.forEach(email => {
+                const emailItem = document.createElement("li");
+                emailItem.innerHTML = `
+                    <strong>${email.subject}</strong> - ${email.sender} <br>
+                    <button onclick="viewEmail(${email.id})">View</button>
+                    <button onclick="resendEmail(${email.id})">Resend</button>
+                    <button onclick="forwardEmail(${email.id})">Forward</button>
+                    <button onclick="deleteEmail(${email.id})">Delete</button>
+                `;
+                emailList.appendChild(emailItem);
+            });
+
+            mainContent.appendChild(emailList);
+        }
+
+        function getMockEmails(type) {
+            // Mock data, replace with real API calls
+            return [
+                { id: 1, sender: "alice@globalmail.com", subject: "Meeting Reminder", body: "Don't forget our meeting tomorrow at 3pm.", type: type },
+                { id: 2, sender: "bob@globalmail.com", subject: "Your Order Status", body: "Your order is on its way!", type: type },
+                { id: 3, sender: "charlie@globalmail.com", subject: "Project Update", body: "The project is moving forward.", type: type }
+            ];
+        }
+
+        function viewEmail(emailId) {
+            alert(`Viewing email ${emailId}`);
+            // In a real application, fetch the email from the database and display it
+        }
+
+        function resendEmail(emailId) {
+            alert(`Resending email ${emailId}`);
+            // Implement resend email functionality
+        }
+
+        function forwardEmail(emailId) {
+            alert(`Forwarding email ${emailId}`);
+            // Implement forward email functionality
+        }
+
+        function deleteEmail(emailId) {
+            alert(`Deleting email ${emailId}`);
+            // Implement delete email functionality
+        }
+
+        function composeEmail() {
+            const mainContent = document.getElementById("mainContent");
+            mainContent.innerHTML = `
+                <h2>Compose New Email</h2>
+                <form id="composeForm">
+                    <label for="to">To:</label>
+                    <input type="email" id="to" required><br>
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" required><br>
+                    <label for="body">Body:</label><br>
+                    <textarea id="body" required></textarea><br>
+                    <button type="submit" onclick="sendEmail(event)">Send</button>
+                </form>
+            `;
+        }
+
+        function sendEmail(event) {
+            event.preventDefault();
+            const to = document.getElementById("to").value;
+            const subject = document.getElementById("subject").value;
+            const body = document.getElementById("body").value;
+
+            alert(`Sending email to: ${to} with subject: ${subject}`);
+
+            // Here, you would normally send the email data to your server
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+    </script>
+</body>
+</html>

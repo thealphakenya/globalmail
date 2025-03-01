@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>Create a GlobalMail Account</h1>
-    <form id="registerForm">
+    <form id="registerForm" onsubmit="registerUser(); return false;">
         <input type="text" id="fullName" placeholder="Full Name" required>
         <input type="date" id="dob" required>
         <select id="gender">
@@ -25,5 +25,39 @@
         <p id="emailStatus"></p>
         <button type="submit">Agree to Terms & Register</button>
     </form>
+
+    <script>
+        async function checkEmailAvailability() {
+            let email = document.getElementById("customEmail").value + "@globalmail.com";
+            // Replace with your email-checking API endpoint
+            let response = await fetch(`https://your-api-endpoint.com/check-email?email=${email}`);
+            let data = await response.json();
+            if (data.available) {
+                document.getElementById("emailStatus").innerText = "Email is available!";
+            } else {
+                document.getElementById("emailStatus").innerText = "Email is already taken.";
+            }
+        }
+
+        async function registerUser() {
+            let newUser = {
+                fullName: document.getElementById("fullName").value,
+                dob: document.getElementById("dob").value,
+                gender: document.getElementById("gender").value,
+                country: document.getElementById("country").value,
+                phone: document.getElementById("phone").value,
+                email: document.getElementById("customEmail").value + "@globalmail.com",
+                password: await hashPassword(prompt("Set a password:"))
+            };
+
+            // Assuming registerUser function in auth.js handles adding the user
+            await registerUserToDatabase(newUser);
+
+            // Automatically log the user in and redirect them to the homepage
+            localStorage.setItem("user", JSON.stringify(newUser)); // Store user info
+            alert("Registration successful! You are now logged in.");
+            window.location.href = "index.html"; // Redirect to the login page
+        }
+    </script>
 </body>
 </html>

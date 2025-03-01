@@ -22,13 +22,19 @@
             let user = JSON.parse(localStorage.getItem("user"));
             if (!user) {
                 alert("Please login first!");
-                window.location.href = "index.html";
+                window.location.href = "index.html"; // Redirect to login if no user is found
                 return;
             }
             document.getElementById("fullName").innerText = user.fullName;
             document.getElementById("email").innerText = user.email;
             document.getElementById("phone").innerText = user.phone;
             document.getElementById("country").innerText = user.country;
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            alert("Logged out successfully!");
+            window.location.href = "index.html"; // Redirect to login page on logout
         }
     </script>
 </body>
