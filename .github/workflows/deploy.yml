@@ -3,32 +3,44 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - master  # Ensure this matches your default branch (main or master)
+      - master  # Or 'main' if you've updated your default branch
+  pull_request:
+    branches:
+      - master
   workflow_dispatch:
+
+concurrency:
+  group: production
+  cancel-in-progress: true  # This ensures only one deployment is active at any given time.
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: production  # Define the deployment environment (can be 'production', 'staging', etc.)
 
     steps:
-      # Step 1: Checkout the repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (optional, only if needed)
+      # Optional: Set up Node.js if your project requires it
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Specify Node.js version if needed
+          node-version: '14'  # Update this version if necessary
 
-      # Step 3: Install dependencies (only if you need them)
+      # Install dependencies (use only if your project needs it)
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Deploy to GitHub Pages
+      # Build the project (use this if you need to build assets like static files)
+      - name: Build the project
+        run: npm run build  # Or a relevant command if using a build tool
+
+      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: ./  # Point to the folder containing your static files (root directory)
+          folder: ./  # Assuming you want to deploy the root folder (static files)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
