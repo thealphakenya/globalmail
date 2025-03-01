@@ -1,0 +1,16 @@
+{
+  "name": "globalmail",
+  "version": "1.0.0",
+  "description": "A secure email application",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'No build step needed for static files'",
+    "deploy": "echo 'Deploying app to GitHub Pages'"
+  },
+  "dependencies": {
+    "some-package": "^1.0.0"
+  },
+  "devDependencies": {},
+  "author": "Your Name",
+  "license": "MIT"
+}

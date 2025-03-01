@@ -1,10 +1,9 @@
 name: Deploy to GitHub Pages
 
-# Trigger the workflow on push to the 'main' branch
 on:
   push:
     branches:
-      - main
+      - master  # Ensure this is 'master' if that's your default branch
   workflow_dispatch:
 
 jobs:
@@ -22,18 +21,18 @@ jobs:
         with:
           node-version: '14'  # Specify Node.js version (adjust if needed)
 
-      # Step 3: Install dependencies (npm or yarn)
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install
 
       # Step 4: Build the project (e.g., build static files if applicable)
       - name: Build the project
-        run: npm run build  # If using React, Vue, or other static file builders
+        run: npm run build  # Make sure this works locally first
 
       # Step 5: Deploy the build files to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          folder: ./build  # Point to the folder containing your built files (e.g., `build`, `dist`)
+          folder: ./build  # Ensure the 'build' folder contains your built files
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides this secret token
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides this token
