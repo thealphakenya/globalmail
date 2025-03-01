@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Homepage - GlobalMail</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="js/adminHomepage.js"></script>
+</head>
+<body>
+    <h1>Welcome to Admin Dashboard</h1>
+    <nav>
+        <ul>
+            <li><a href="globalMailAi.html">GlobalMail AI</a></li>
+            <li><a href="dataManagement.html">Data Management</a></li>
+            <li><a href="performance.html">Performance</a></li>
+        </ul>
+    </nav>
+    <button onclick="logout()">Logout</button>
+
+    <script>
+        // Check if the user is an admin before showing the page content
+        window.onload = () => {
+            const admin = JSON.parse(localStorage.getItem("admin"));
+            if (!admin || admin.email !== "rovicviccy@gmail.com") {
+                alert("You are not authorized to access this page!");
+                window.location.href = "index.html";  // Redirect to login if not an admin
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("admin");
+            window.location.href = "index.html";  // Redirect to login page
+        }
+    </script>
+</body>
+</html>

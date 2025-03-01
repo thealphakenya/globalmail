@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail - Register</title>
+    <link rel="stylesheet" href="style.css"> <!-- Corrected the path to style.css -->
+    <script defer src="js/auth.js"></script> <!-- Corrected path to auth.js in the js folder -->
+</head>
+<body>
+    <header>
+        <h1>Create a New Account</h1>
+    </header>
+
+    <main>
+        <div id="sign-up-form">
+            <h2>Sign Up</h2>
+            <form id="signUpForm">
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Register</button>
+            </form>
+            <p>Already have an account? <a href="sign-in.html">Login</a></p>
+        </div>
+    </main>
+
+    <script>
+        async function signUp(event) {
+            event.preventDefault(); // Prevent form submission
+
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem("users")) || []; // Get existing users from localStorage
+            if (users.find(u => u.email === email)) {
+                alert("User already exists.");
+                return;
+            }
+
+            // Add new user to the array
+            users.push({ email, password });
+
+            // Save updated users array to localStorage
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert("Registration Successful!");
+
+            // Automatically log in the user after successful registration
+            localStorage.setItem("user", JSON.stringify({ email, password }));
+            window.location.href = "globalmailhomepage.html"; // Redirect to homepage
+        }
+
+        // Attach the signUp function to the form submission event
+        document.getElementById("signUpForm").addEventListener("submit", signUp);
+    </script>
+</body>
+</html>
