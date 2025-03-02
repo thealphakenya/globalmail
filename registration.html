@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            width: 400px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>GlobalMail Registration</h2>
+        <form action="register.php" method="POST">
+            <label>Full Name:</label>
+            <input type="text" name="full_name" required>
+
+            <label>Email Address:</label>
+            <input type="email" name="email" placeholder="yourname@globalmail.com" required>
+
+            <label>Password:</label>
+            <input type="password" name="password" required>
+
+            <label>Confirm Password:</label>
+            <input type="password" name="confirm_password" required>
+
+            <label>Mobile Number:</label>
+            <input type="tel" name="mobile" required>
+
+            <label>Alternate Email (for recovery):</label>
+            <input type="email" name="alternate_email">
+
+            <label>Security Question:</label>
+            <select name="security_question" required>
+                <option value="pet">What was the name of your first pet?</option>
+                <option value="book">What is your favorite book or movie?</option>
+                <option value="city">What is the name of the city where you were born?</option>
+            </select>
+
+            <label>Security Answer:</label>
+            <input type="text" name="security_answer" required>
+
+            <label>Preferred Theme:</label>
+            <select name="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="auto">Auto</option>
+            </select>
+
+            <label>Enable Two-Factor Authentication (2FA)?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="enable_2fa">
+                <span>Yes</span>
+            </div>
+
+            <label>Enable AI-Powered Email Summarization?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="enable_ai_summary">
+                <span>Yes</span>
+            </div>
+
+            <label>Accept GlobalMail Terms & Conditions:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="terms" required>
+                <span>I Accept</span>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+</body>
+</html>

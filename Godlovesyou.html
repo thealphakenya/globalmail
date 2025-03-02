@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlobalMail Loading</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #111;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .loader {
+            font-size: 40px;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            gap: 5px;
+        }
+
+        .letter {
+            opacity: 0;
+            animation: appear 1s forwards;
+        }
+
+        @keyframes appear {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* Delays for each letter */
+        .letter:nth-child(1) { animation-delay: 0s; }
+        .letter:nth-child(2) { animation-delay: 0.09s; }
+        .letter:nth-child(3) { animation-delay: 0.18s; }
+        .letter:nth-child(4) { animation-delay: 0.27s; }
+        .letter:nth-child(5) { animation-delay: 0.36s; }
+        .letter:nth-child(6) { animation-delay: 0.45s; }
+        .letter:nth-child(7) { animation-delay: 0.54s; }
+        .letter:nth-child(8) { animation-delay: 0.63s; }
+        .letter:nth-child(9) { animation-delay: 0.72s; }
+        .letter:nth-child(10) { animation-delay: 0.81s; }
+        .letter:nth-child(11) { animation-delay: 0.90s; }
+    </style>
+</head>
+<body>
+
+    <div class="loader">
+        <span class="letter">G</span>
+        <span class="letter">o</span>
+        <span class="letter">d</span>
+        <span class="letter">l</span>
+        <span class="letter">o</span>
+        <span class="letter">v</span>
+        <span class="letter">e</span>
+        <span class="letter">s</span>
+        <span class="letter">y</span>
+        <span class="letter">o</span>
+        <span class="letter">u</span>
+    </div>
+
+</body>
+</html>
