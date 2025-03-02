@@ -1,4 +1,3 @@
-<!-- globalMailAi.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +9,17 @@
 </head>
 <body>
     <h1>GlobalMail AI Interaction</h1>
-    <textarea id="aiInput" placeholder="Type your instruction here..."></textarea>
+    
+    <textarea id="aiInput" placeholder="Type your instruction or question here..."></textarea>
+    
     <button onclick="sendToAI()">Send to AI</button>
+    
     <div id="aiResponse"></div>
+
+    <!-- For displaying error logs (if AI cannot generate response) -->
+    <div id="errorLogs" style="display:none; margin-top: 20px;">
+        <h3>AI Logs (For Developers):</h3>
+        <pre id="errorLogContent" style="background-color: #f7f7f7; padding: 10px; border: 1px solid #ddd; font-size: 14px;"></pre>
+    </div>
 </body>
 </html>

@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobalMail Dashboard</title>
     <link rel="stylesheet" href="styles.css">
-    <script defer src="auth.js"></script>
-    <script defer src="email.js"></script>
+    <script defer src="js/email.js"></script>
 </head>
 <body>
     <h1>Welcome to GlobalMail</h1>
     <nav>
-        <a href="#" onclick="loadInbox()">Inbox</a>
-        <a href="#" onclick="loadSent()">Sent</a>
-        <a href="#" onclick="loadDrafts()">Drafts</a>
+        <a href="inbox.html">Inbox</a>
+        <a href="sent.html">Sent</a>
+        <a href="outbox.html">Outbox</a>
         <a href="profile.html">Profile</a>
         <button onclick="logout()">Logout</button>
     </nav>

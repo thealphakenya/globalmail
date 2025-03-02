@@ -6,57 +6,199 @@
     <title>GlobalMail - Register</title>
     <link rel="stylesheet" href="style.css"> <!-- Corrected the path to style.css -->
     <script defer src="js/auth.js"></script> <!-- Corrected path to auth.js in the js folder -->
+
+    <style>
+        /* Additional styles for modern registration page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            max-width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .checkbox-group input {
+            width: auto;
+            margin-right: 10px;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            margin-top: 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        p {
+            text-align: center;
+            margin-top: 15px;
+        }
+        p a {
+            color: #007BFF;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Create a New Account</h1>
-    </header>
 
-    <main>
-        <div id="sign-up-form">
-            <h2>Sign Up</h2>
-            <form id="signUpForm">
-                <input type="email" id="email" placeholder="Email" required>
-                <input type="password" id="password" placeholder="Password" required>
-                <button type="submit">Register</button>
-            </form>
-            <p>Already have an account? <a href="sign-in.html">Login</a></p>
-        </div>
-    </main>
+    <div class="container">
+        <h2>GlobalMail Registration</h2>
+        <form id="registerForm">
+            <label>Full Name:</label>
+            <input type="text" id="full_name" name="full_name" required>
+
+            <label>Email Address:</label>
+            <input type="email" id="email" name="email" placeholder="yourname@globalmail.com" required>
+
+            <label>Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label>Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <label>Mobile Number:</label>
+            <input type="tel" id="mobile" name="mobile" required>
+
+            <label>Alternate Email (for recovery):</label>
+            <input type="email" id="alternate_email" name="alternate_email">
+
+            <label>Security Question:</label>
+            <select name="security_question" id="security_question" required>
+                <option value="pet">What was the name of your first pet?</option>
+                <option value="book">What is your favorite book or movie?</option>
+                <option value="city">What is the name of the city where you were born?</option>
+            </select>
+
+            <label>Security Answer:</label>
+            <input type="text" id="security_answer" name="security_answer" required>
+
+            <label>Preferred Theme:</label>
+            <select name="theme" id="theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="auto">Auto</option>
+            </select>
+
+            <label>Enable Two-Factor Authentication (2FA)?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="enable_2fa" id="enable_2fa">
+                <span>Yes</span>
+            </div>
+
+            <label>Enable AI-Powered Email Summarization?</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="enable_ai_summary" id="enable_ai_summary">
+                <span>Yes</span>
+            </div>
+
+            <label>Accept GlobalMail Terms & Conditions:</label>
+            <div class="checkbox-group">
+                <input type="checkbox" name="terms" id="terms" required>
+                <span>I Accept</span>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="sign-in.html">Login</a></p>
+    </div>
 
     <script>
-        async function signUp(event) {
+        // Function to handle form submission
+        document.getElementById("registerForm").addEventListener("submit", async function (event) {
             event.preventDefault(); // Prevent form submission
 
+            let fullName = document.getElementById("full_name").value;
             let email = document.getElementById("email").value;
             let password = document.getElementById("password").value;
+            let confirmPassword = document.getElementById("confirm_password").value;
+            let mobile = document.getElementById("mobile").value;
+            let alternateEmail = document.getElementById("alternate_email").value;
+            let securityQuestion = document.getElementById("security_question").value;
+            let securityAnswer = document.getElementById("security_answer").value;
+            let theme = document.getElementById("theme").value;
+            let enable2fa = document.getElementById("enable_2fa").checked;
+            let enableAiSummary = document.getElementById("enable_ai_summary").checked;
+            let termsAccepted = document.getElementById("terms").checked;
 
-            if (!email || !password) {
-                alert("Please fill in all fields.");
+            if (!email || !password || !confirmPassword || !termsAccepted) {
+                alert("Please fill in all required fields and accept the terms.");
                 return;
             }
 
-            let users = JSON.parse(localStorage.getItem("users")) || []; // Get existing users from localStorage
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            // Retrieve existing users from localStorage
+            let users = JSON.parse(localStorage.getItem("users")) || [];
+
+            // Check if the email already exists
             if (users.find(u => u.email === email)) {
                 alert("User already exists.");
                 return;
             }
 
-            // Add new user to the array
-            users.push({ email, password });
+            // Add new user data to the array
+            users.push({
+                fullName,
+                email,
+                password,
+                mobile,
+                alternateEmail,
+                securityQuestion,
+                securityAnswer,
+                theme,
+                enable2fa,
+                enableAiSummary
+            });
 
-            // Save updated users array to localStorage
+            // Save the updated users list to localStorage
             localStorage.setItem("users", JSON.stringify(users));
 
             alert("Registration Successful!");
 
-            // Automatically log in the user after successful registration
+            // Automatically log in the user after registration
             localStorage.setItem("user", JSON.stringify({ email, password }));
             window.location.href = "globalmailhomepage.html"; // Redirect to homepage
-        }
-
-        // Attach the signUp function to the form submission event
-        document.getElementById("signUpForm").addEventListener("submit", signUp);
+        });
     </script>
 </body>
 </html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Email</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="js/email.js"></script>
+</head>
+<body>
+    <h1>Compose Email</h1>
+    <form id="composeForm">
+        <label for="to">To:</label>
+        <input type="email" id="to" required>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" rows="5" required></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+    <script>
+        document.getElementById('composeForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const to = document.getElementById('to').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // Check if the input is valid
+            if (!to || !subject || !message) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            // Simulate sending the email (You can replace with actual sending logic)
+            const sendStatus = await sendEmail(to, subject, message);
+
+            if (sendStatus.success) {
+                alert("Email sent successfully.");
+                // Save to sent emails
+                saveSentEmail(to, subject, message);
+            } else {
+                alert("Failed to send email. Saving to Outbox.");
+                // Save to outbox with error message
+                saveOutboxEmail(to, subject, message, sendStatus.error);
+            }
+        });
+
+        async function sendEmail(to, subject, message) {
+            // Simulate an API call to send the email
+            try {
+                // Simulate a successful send
+                return { success: true };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        function saveSentEmail(to, subject, message) {
+            const sentEmails = JSON.parse(localStorage.getItem('sentEmails')) || [];
+            sentEmails.push({ to, subject, message, status: 'Sent', date: new Date().toISOString() });
+            localStorage.setItem('sentEmails', JSON.stringify(sentEmails));
+        }
+
+        function saveOutboxEmail(to, subject, message, error) {
+            const outboxEmails = JSON.parse(localStorage.getItem('outboxEmails')) || [];
+            outboxEmails.push({ to, subject, message, error, date: new Date().toISOString() });
+            localStorage.setItem('outboxEmails', JSON.stringify(outboxEmails));
+        }
+    </script>
+</body>
+</html>

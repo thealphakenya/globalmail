@@ -7,40 +7,39 @@
     <link rel="stylesheet" href="styles.css">
     <script defer src="auth.js"></script>
     <style>
-        /* Style for GLM logo */
-        .glm-logo {
+        /* Styling for the download button */
+        .download-btn {
             position: absolute;
             top: 10px;
-            right: 20px;
-            font-size: 35px;
-            font-weight: bold;
-            font-family: 'Arial', sans-serif;
+            left: 20px;
+            background-color: #1e90ff;
             color: white;
-            background-color: black;
-            padding: 12px 24px;
-            border-radius: 8px;
-            letter-spacing: 5px;
+            padding: 10px 20px;
+            border-radius: 5px;
             text-transform: uppercase;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-            transition: all 0.3s ease-in-out;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
 
-        /* Glowing effect on hover */
-        .glm-logo:hover {
-            box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
-            transform: scale(1.05);
+        .download-btn:hover {
+            background-color: #0066cc;
         }
     </style>
 </head>
 <body onload="checkLoginStatus()">
+    <!-- Download Button -->
+    <button class="download-btn" onclick="downloadApplication()">Download Application</button>
+
     <header>
         <nav>
             <ul>
-                <li><a href="#" onclick="showInbox()">Inbox</a></li>
-                <li><a href="#" onclick="showSent()">Sent</a></li>
-                <li><a href="#" onclick="composeEmail()">Compose Email</a></li>
+                <li><a href="inbox.html">Inbox</a></li>
+                <li><a href="sent.html">Sent</a></li>
+                <li><a href="compose.html">Compose Email</a></li>
                 <li><a href="profile.html" id="profileLink">Profile</a></li>
-                <li><a href="#" onclick="logout()">Logout</a></li>
+                <li><a href="index.html" onclick="logout()">Logout</a></li>
             </ul>
         </nav>
 
@@ -58,6 +57,7 @@
     </main>
 
     <script>
+        // Function to check the login status
         function checkLoginStatus() {
             const user = localStorage.getItem("user");
             if (!user) {
@@ -68,8 +68,54 @@
             }
         }
 
+        // Redirect to profile when user clicks on their profile picture
         function goToProfile() {
             window.location.href = "profile.html"; // Redirect to profile page on clicking profile picture
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+
+        // Download Application function
+        function downloadApplication() {
+            // Assume the application is available for download from a server.
+            const platform = getPlatform();
+            let downloadUrl = '';
+
+            // Check platform (Desktop or Mobile) and download appropriate version
+            if (platform === 'mobile') {
+                downloadUrl = 'https://example.com/globalmail-app.apk'; // Link to APK for Android
+            } else if (platform === 'windows') {
+                downloadUrl = 'https://example.com/globalmail-app.exe'; // Link to .exe for Windows
+            } else if (platform === 'mac') {
+                downloadUrl = 'https://example.com/globalmail-app.dmg'; // Link to .dmg for macOS
+            } else if (platform === 'pwa') {
+                // For mobile browsers, offer a PWA download prompt
+                alert('Install this app on your phone using the "Add to Home Screen" option!');
+                return;
+            }
+
+            // Trigger the download
+            window.location.href = downloadUrl;
+        }
+
+        // Function to detect the platform
+        function getPlatform() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes('android')) {
+                return 'mobile';
+            } else if (userAgent.includes('iphone') || userAgent.includes('ipad')) {
+                return 'mobile';
+            } else if (userAgent.includes('windows')) {
+                return 'windows';
+            } else if (userAgent.includes('macintosh')) {
+                return 'mac';
+            } else {
+                return 'pwa'; // Default to PWA (Progressive Web App)
+            }
         }
     </script>
 </body>

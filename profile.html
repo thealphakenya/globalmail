@@ -6,18 +6,112 @@
     <title>Profile - GlobalMail</title>
     <link rel="stylesheet" href="styles.css">
     <script defer src="auth.js"></script>
+
+    <style>
+        /* Add some basic styling for the profile page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .profile-info {
+            margin-bottom: 20px;
+        }
+        .editable-field {
+            margin-bottom: 15px;
+        }
+        .edit-btn {
+            background: #28a745;
+            color: white;
+            width: auto;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body onload="loadProfile()">
-    <h1>User Profile</h1>
-    <div>
-        <p><strong>Full Name:</strong> <span id="fullName"></span></p>
-        <p><strong>Email:</strong> <span id="email"></span></p>
-        <p><strong>Phone:</strong> <span id="phone"></span></p>
-        <p><strong>Country:</strong> <span id="country"></span></p>
+    <div class="container">
+        <h1>User Profile</h1>
+
+        <!-- Profile Information Display -->
+        <div class="profile-info">
+            <img id="profilePicture" src="default-profile.jpg" alt="Profile Picture" width="100">
+            <input type="file" id="fileInput" onchange="changeProfilePicture()" style="margin-top: 10px;">
+            <div class="editable-field">
+                <label>Full Name:</label>
+                <span id="fullName"></span>
+                <input type="text" id="editFullName" style="display: none;">
+                <button id="editFullNameBtn" onclick="editFullName()">Edit</button>
+            </div>
+            <div class="editable-field">
+                <label>Email:</label>
+                <span id="email"></span>
+                <input type="email" id="editEmail" style="display: none;">
+                <button id="editEmailBtn" onclick="editEmail()">Edit</button>
+            </div>
+            <div class="editable-field">
+                <label>Phone:</label>
+                <span id="phone"></span>
+                <input type="tel" id="editPhone" style="display: none;">
+                <button id="editPhoneBtn" onclick="editPhone()">Edit</button>
+            </div>
+            <div class="editable-field">
+                <label>Recovery Email:</label>
+                <span id="recoveryEmail"></span>
+                <input type="email" id="editRecoveryEmail" style="display: none;">
+                <button id="editRecoveryEmailBtn" onclick="editRecoveryEmail()">Edit</button>
+            </div>
+            <div class="editable-field">
+                <label>Date of Birth:</label>
+                <span id="dob"></span>
+                <input type="date" id="editDOB" style="display: none;">
+                <button id="editDOBBtn" onclick="editDOB()">Edit</button>
+            </div>
+            <button class="edit-btn" onclick="saveProfile()">Save Changes</button>
+        </div>
+        
         <button onclick="logout()">Logout</button>
     </div>
 
     <script>
+        // Load profile information from localStorage
         function loadProfile() {
             let user = JSON.parse(localStorage.getItem("user"));
             if (!user) {
@@ -25,12 +119,140 @@
                 window.location.href = "index.html"; // Redirect to login if no user is found
                 return;
             }
+
+            // Display profile information
             document.getElementById("fullName").innerText = user.fullName;
             document.getElementById("email").innerText = user.email;
             document.getElementById("phone").innerText = user.phone;
-            document.getElementById("country").innerText = user.country;
+            document.getElementById("recoveryEmail").innerText = user.recoveryEmail || 'N/A';
+            document.getElementById("dob").innerText = user.dob || 'N/A';
         }
 
+        // Toggle editing mode for full name
+        function editFullName() {
+            let fullName = document.getElementById("fullName");
+            let editFullName = document.getElementById("editFullName");
+            let editFullNameBtn = document.getElementById("editFullNameBtn");
+
+            if (editFullName.style.display === "none") {
+                editFullName.style.display = "inline-block";
+                editFullName.value = fullName.innerText;
+                fullName.style.display = "none";
+                editFullNameBtn.innerText = "Save";
+            } else {
+                fullName.innerText = editFullName.value;
+                localStorage.setItem("user", JSON.stringify({ ...getUserData(), fullName: editFullName.value }));
+                editFullName.style.display = "none";
+                fullName.style.display = "inline-block";
+                editFullNameBtn.innerText = "Edit";
+            }
+        }
+
+        // Toggle editing mode for email
+        function editEmail() {
+            let email = document.getElementById("email");
+            let editEmail = document.getElementById("editEmail");
+            let editEmailBtn = document.getElementById("editEmailBtn");
+
+            if (editEmail.style.display === "none") {
+                editEmail.style.display = "inline-block";
+                editEmail.value = email.innerText;
+                email.style.display = "none";
+                editEmailBtn.innerText = "Save";
+            } else {
+                email.innerText = editEmail.value;
+                localStorage.setItem("user", JSON.stringify({ ...getUserData(), email: editEmail.value }));
+                editEmail.style.display = "none";
+                email.style.display = "inline-block";
+                editEmailBtn.innerText = "Edit";
+            }
+        }
+
+        // Toggle editing mode for phone
+        function editPhone() {
+            let phone = document.getElementById("phone");
+            let editPhone = document.getElementById("editPhone");
+            let editPhoneBtn = document.getElementById("editPhoneBtn");
+
+            if (editPhone.style.display === "none") {
+                editPhone.style.display = "inline-block";
+                editPhone.value = phone.innerText;
+                phone.style.display = "none";
+                editPhoneBtn.innerText = "Save";
+            } else {
+                phone.innerText = editPhone.value;
+                localStorage.setItem("user", JSON.stringify({ ...getUserData(), phone: editPhone.value }));
+                editPhone.style.display = "none";
+                phone.style.display = "inline-block";
+                editPhoneBtn.innerText = "Edit";
+            }
+        }
+
+        // Toggle editing mode for recovery email
+        function editRecoveryEmail() {
+            let recoveryEmail = document.getElementById("recoveryEmail");
+            let editRecoveryEmail = document.getElementById("editRecoveryEmail");
+            let editRecoveryEmailBtn = document.getElementById("editRecoveryEmailBtn");
+
+            if (editRecoveryEmail.style.display === "none") {
+                editRecoveryEmail.style.display = "inline-block";
+                editRecoveryEmail.value = recoveryEmail.innerText;
+                recoveryEmail.style.display = "none";
+                editRecoveryEmailBtn.innerText = "Save";
+            } else {
+                recoveryEmail.innerText = editRecoveryEmail.value;
+                localStorage.setItem("user", JSON.stringify({ ...getUserData(), recoveryEmail: editRecoveryEmail.value }));
+                editRecoveryEmail.style.display = "none";
+                recoveryEmail.style.display = "inline-block";
+                editRecoveryEmailBtn.innerText = "Edit";
+            }
+        }
+
+        // Toggle editing mode for DOB
+        function editDOB() {
+            let dob = document.getElementById("dob");
+            let editDOB = document.getElementById("editDOB");
+            let editDOBBtn = document.getElementById("editDOBBtn");
+
+            if (editDOB.style.display === "none") {
+                editDOB.style.display = "inline-block";
+                editDOB.value = dob.innerText;
+                dob.style.display = "none";
+                editDOBBtn.innerText = "Save";
+            } else {
+                dob.innerText = editDOB.value;
+                localStorage.setItem("user", JSON.stringify({ ...getUserData(), dob: editDOB.value }));
+                editDOB.style.display = "none";
+                dob.style.display = "inline-block";
+                editDOBBtn.innerText = "Edit";
+            }
+        }
+
+        // Save profile information after editing
+        function saveProfile() {
+            alert("Profile updated successfully!");
+            window.location.reload(); // Reload to reflect changes
+        }
+
+        // Get user data from localStorage (for updating)
+        function getUserData() {
+            return JSON.parse(localStorage.getItem("user")) || {};
+        }
+
+        // Change profile picture
+        function changeProfilePicture() {
+            let fileInput = document.getElementById("fileInput");
+            let profilePicture = document.getElementById("profilePicture");
+
+            let reader = new FileReader();
+            reader.onload = function (e) {
+                profilePicture.src = e.target.result;
+                localStorage.setItem("profilePicture", e.target.result);
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        // Logout function
         function logout() {
             localStorage.removeItem("user");
             alert("Logged out successfully!");
